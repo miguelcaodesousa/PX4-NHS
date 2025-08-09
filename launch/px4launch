@@ -1,0 +1,55 @@
+export PX4_HOME_LAT=53.4103
+export PX4_HOME_LON=-1.4456
+export PX4_HOME_ALT=120.0
+
+# Activate your python venv if needed
+source ~/px4-venv/bin/activate
+
+# STEP 2: Get WSL2 IP
+WSL_IP=$(hostname -I | awk '{print $1}')
+QGC_IP=172.22.64.1
+
+echo "🧠 Detected WSL IP: $WSL_IP"
+echo "🧠 Assuming QGroundControl is at: $QGC_IP"
+
+# STEP 3: Build PX4 and WAIT
+echo "🧱 Building PX4 SITL for gz_x500..."
+make px4_sitl_default gz_x500
+BUILD_STATUS=$?
+
+if [ $BUILD_STATUS -ne 0 ]; then
+    echo "❌ PX4 build failed with status $BUILD_STATUS"
+    exit 1
+fi
+
+# STEP 4: Verify rcS file exists
+RC_S=build/px4_sitl_default/etc/init.d-posix/rcS
+
+if [ -f "$RC_S" ]; then
+    echo "✅ rcS found!"
+else
+    echo "❌ rcS not found! Build may have failed or path is incorrect."
+    exit 1
+fi
+
+# STEP 5: Inject MAVLink endpoints
+PX4_COMMAND_FILE=/tmp/px4_adsb_commands.pxh
+cat <<EOF > "$PX4_COMMAND_FILE"
+mavlink stop-all
+mavlink start -u 14540 -o 14550 -t 172.22.64.1 -m onboard -x
+mavlink start -u 14600 -o 14601 -t $WSL_IP -m custom -x
+EOF
+
+echo "🛰️ Injecting MAVLink configuration..."
+script -q -c "px4 < $PX4_COMMAND_FILE" /dev/null
+
+# STEP 6: Wait for MAVLink UDP port 14601 to open before running inject_adsb.py
+echo "⏳ Waiting for PX4 to open UDP port 14601 for ADS-B injection..."
+while ! ss -uln | grep -q ':14601'; do
+    sleep 1
+done
+echo "✅ UDP port 14601 is open. Starting ADS-B injection script..."
+
+
+# Run the ADS-B injection script
+python3 ~/PX4-Stable/inject_adsb.py

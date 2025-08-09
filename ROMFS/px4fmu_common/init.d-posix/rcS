@@ -103,6 +103,12 @@ fi
 
 param select-backup $PARAM_BACKUP_FILE
 
+param select-backup $PARAM_BACKUP_FILE
+
+# Set home location to Northern General Hospital, Sheffield
+commander set_home -g 53.4103 -1.4456 120.0
+
+
 
 # exit early when the minimal shell is requested
 [ $RUN_MINIMAL_SHELL = yes ] && exit 0

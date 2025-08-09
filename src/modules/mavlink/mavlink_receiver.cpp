@@ -1545,10 +1545,10 @@ MavlinkReceiver::handle_message_odometry(mavlink_message_t *msg)
 	case MAV_ESTIMATOR_TYPE_LIDAR:
 	case MAV_ESTIMATOR_TYPE_AUTOPILOT:
 	default:
-		mavlink_log_critical(&_mavlink_log_pub, "ODOMETRY: estimator_type %" PRIu8 " unsupported\t",
-				     odom_in.estimator_type);
-		events::send<uint8_t>(events::ID("mavlink_rcv_odom_unsup_estimator_type"), events::Log::Error,
-				      "ODOMETRY: unsupported estimator_type {1}", odom_in.estimator_type);
+		//mavlink_log_critical(&_mavlink_log_pub, "ODOMETRY: estimator_type %" PRIu8 " unsupported\t",
+		//		     odom_in.estimator_type);
+		//events::send<uint8_t>(events::ID("mavlink_rcv_odom_unsup_estimator_type"), events::Log::Error,
+		//		      "ODOMETRY: unsupported estimator_type {1}", odom_in.estimator_type);
 		return;
 	}
 }
