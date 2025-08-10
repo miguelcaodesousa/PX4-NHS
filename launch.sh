@@ -21,7 +21,7 @@ export PX4_HOME_LON=-1.456556
 export PX4_HOME_ALT=120.0
 
 # PX4 model
-MODEL="gz_x500"
+MODEL="gz_rc_cessna"
 
 # Paths
 PX4_DIR="$HOME/PX4-Stable"
