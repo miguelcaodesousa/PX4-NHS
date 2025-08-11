@@ -1,0 +1,11 @@
+
+# PX4-NHS
+Full control and simulation ecosystem for the air traffic management and testing of a concept NHS autogyro drone.   
+Built on a Linux Ubuntu Jammy 22.04 shell in Windows 10.
+You'll need to set up QGroundcontrol, a third party virtual window launcher for the Linux shell, and 
+
+
+Ask ChatGpt to help, any questions you absolutely can't solve then mail miguelcaodesousa@gmail.com.
+
+
+
