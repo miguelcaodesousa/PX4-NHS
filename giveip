@@ -1,0 +1,5 @@
+
+
+mavlink start -u 14540 -o 14550 -t  172.17.16.1 -m onboard -x
+
+mavlink start -u 14600 -o 14601 -t 172.17.18.163 -m custom -x

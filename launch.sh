@@ -25,7 +25,7 @@ MODEL="gz_rc_cessna"
 
 # Paths
 PX4_DIR="$HOME/PX4-Stable"
-ADSB_SCRIPT="$PX4_DIR/inject_adsb.py"
+ADSB_SCRIPT="$PX4_DIR/inject_adsb4.py"
 
 # =========================
 # ENVIRONMENT EXPORTS
@@ -33,10 +33,16 @@ ADSB_SCRIPT="$PX4_DIR/inject_adsb.py"
 export GZ_IP=127.0.0.1
 export PX4_SIM_SPEED_FACTOR=1
 
-# Detect Windows host IP
-HOST_IP=$(awk '/nameserver/ {print $2; exit}' /etc/resolv.conf)
-export HOST_IP
-echo "🧠 Detected Windows Host IP: $HOST_IP"
+# Prints mavlink start exectuable based on sessions IP
+WINDOWS_IP=$(awk '/nameserver/ {print $2; exit}' /etc/resolv.conf)
+export WINDOWS_IP
+WSL_IP=$(hostname -I | awk '{print $1}')
+export WSL_IP
+echo "🧠 Copy and paste the following into the PX4 shell to initiate the mavlink connections: 
+# QGroundControl connection 
+mavlink start -u 14540 -o 14550 -t  $WINDOWS_IP -m onboard -x
+# Avoidance system // simulation environment connection
+mavlink start -u 14600 -o 14601 -t $WSL_IP -m custom -x"
 
 # =========================
 # CLEAN UP OLD PX4 PROCESSES
